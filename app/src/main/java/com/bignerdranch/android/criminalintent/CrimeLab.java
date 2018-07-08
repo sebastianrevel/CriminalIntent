@@ -1,6 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class CrimeLab {
     private List<Crime> mCrimes;
 
     public static CrimeLab get(Context context) {
+        Log.d("TEST", "InCrimeLabget");
         if (sCrimeLab == null) {
             sCrimeLab = new CrimeLab(context);
         }
@@ -20,6 +22,7 @@ public class CrimeLab {
     }
 
     private CrimeLab (Context context){
+        Log.d("TEST", "InCrimeLabnewArray");
         mCrimes = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             Crime crime = new Crime();
@@ -30,12 +33,14 @@ public class CrimeLab {
     }
 
     public List<Crime> getCrimes() {
+        Log.d("TEST", "InCrimeLabGetCrime(s)");
         return mCrimes;
     }
 
     public Crime getCrime(UUID id) {
+        Log.d("TEST", "InCrimeLabgetCrime");
         for (Crime crime : mCrimes) {
-            if (crime.getID().equals(id)){
+            if (crime.getId().equals(id)){
                 return crime;
             }
         }

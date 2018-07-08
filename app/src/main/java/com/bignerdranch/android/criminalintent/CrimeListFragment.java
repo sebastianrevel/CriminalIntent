@@ -1,5 +1,6 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,7 @@ public class CrimeListFragment extends Fragment {
     private CrimeAdapter mAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("TEST", "InCrimeListFragment");
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
 
         mCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view);
@@ -38,13 +41,25 @@ public class CrimeListFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     //this function will connect the adapter to the RecyclerView, it sets up CrimeListFragments UI.
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
+        if(mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        }
+        else {
+            mAdapter.notifyDataSetChanged();
+        }
     }
     //will inflate the crime list
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -63,8 +78,10 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(getActivity(),mCrime.getTitle() + " clicked!", Toast.LENGTH_SHORT)
-                    .show();
+            // When a crime is selected, it will create a new intent based on the id of the selected crime.
+            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+            //Starts new intent now that we have placed the extras
+            startActivity(intent);
         }
         public void bind(Crime crime) {
             mCrime = crime;
